@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Malla Curricular Psicología UBA</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    .grid {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .column {
+        background: #fff;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        min-width: 220px;
+    }
+    .column h2 {
+        text-align: center;
+        font-size: 18px;
+        color: #444;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
+    }
+    .subject {
+        padding: 8px;
+        border-radius: 6px;
+        margin: 5px 0;
+        cursor: pointer;
+        background-color: #e9f1ff;
+        transition: background-color 0.2s;
+        position: relative;
+    }
+    .subject.approved {
+        background-color: #b8f5c4;
+        text-decoration: line-through;
+    }
+    .subject.locked {
+        background-color: #f0f0f0;
+        color: #999;
+        cursor: not-allowed;
+    }
+    .subject:hover {
+        background-color: #d0e7ff;
+    }
+    .tooltip {
+        visibility: hidden;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    .subject.locked:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+</head>
+<body>
+
+<h1>Malla Curricular Psicología - UBA</h1>
+<div class="grid" id="curriculum"></div>
+
+<script>
+const data = [
+    {
+        year: "CBC",
+        subjects: [
+            { name: "Int. al Pensamiento Científico" },
+            { name: "Int. Con. Sociedad y Estado" },
+            { name: "Matemática" },
+            { name: "Biología" },
+            { name: "Psicología" },
+            { name: "Semiología" }
+        ]
+    },
+    {
+        year: "1° Año",
+        subjects: [
+            { name: "Psicología General", req: ["CBC"] },
+            { name: "Estadística", req: ["CBC"] },
+            { name: "Psicología Social", req: ["CBC"] },
+            { name: "Psicoanálisis: Freud", req: ["CBC"] },
+            { name: "Psicología y Epistemología Genética", req: ["CBC"] },
+            { name: "Neurofisiología", req: ["CBC"] },
+            { name: "Requisito de Idioma I", req: ["Psicología General"] },
+            { name: "Requisito de Idioma II", req: ["Psicología General"] }
+        ]
+    },
+    {
+        year: "2° Año",
+        subjects: [
+            { name: "Historia de la Psicología", req: ["Psicología General"] },
+            { name: "Metodología de la Investigación", req: ["Psicología General", "Estadística"] },
+            { name: "Salud Pública y Salúd Mental", req: ["Psicología Social", "Metodología de la Investigación"] },
+            { name: "Teorías y Técnicas de Grupos", req: ["Psicología Social", "Psicoanálisis: Freud"] },
+            { name: "Psicología Evolutiva: Niñez", req: ["Psicoanálisis: Freud", "Psicología de Aprendizaje"] },
+            { name: "Psicología Evolutiva: Adolescencia", req: ["Psicología Evolutiva: Niñez"] }
+        ]
+    },
+    {
+        year: "3° Año",
+        subjects: [
+            { name: "Psicopatología", req: ["Neurofisiología", "Psicología Evolutiva: Adolescencia"] },
+            { name: "Teo. y Téc. de Explor. y Diag. I", req: ["Psicopatología", "Metodología de la Investigación"] },
+            { name: "Teo. y Téc. de Explor. y Diag. II", req: ["Teo. y Téc. de Explor. y Diag. I"] },
+            { name: "Materia Electiva A" },
+            { name: "Materia Electiva B" }
+        ]
+    },
+    {
+        year: "4° y 5° Año",
+        subjects: [
+            { name: "Psicología Ética y DDHH", req: ["Psicología Social", "Historia de la Psicología"] },
+            { name: "Psicología Institucional", req: ["Salud Pública y Salúd Mental", "Teorías y Técnicas de Grupos"] },
+            { name: "Psicología Educacional", req: ["Salud Pública y Salúd Mental", "Teorías y Técnicas de Grupos", "Psicología Evolutiva: Adolescencia"] },
+            { name: "Psicología del Trabajo", req: ["Salud Pública y Salúd Mental", "Teorías y Técnicas de Grupos", "Teo. y Téc. de Explor. y Diag. II"] },
+            { name: "Cli. Psi. y Psicoter.: Clinica de Adultos", req: ["Teo. y Téc. de Explor. y Diag. II"] },
+            { name: "Psicología Jurídica", req: ["Teo. y Téc. de Explor. y Diag. II"] },
+            { name: "Cli. Psi. y Psicoter.: Psicoter., Emer. e Interconsultas", req: ["Teo. y Téc. de Explor. y Diag. II"] },
+            { name: "Práctica Profesional y de Investigación", req: ["Salud Pública y Salúd Mental"] },
+            { name: "Materia Electiva C" },
+            { name: "Materia Electiva D" },
+            { name: "Materia Electiva E" },
+            { name: "Requisito de Tesis" }
+        ]
+    }
+];
+
+let approved = JSON.parse(localStorage.getItem("approvedSubjects") || "[]");
+
+function saveProgress() {
+    localStorage.setItem("approvedSubjects", JSON.stringify(approved));
+}
+
+function hasRequirement(subject) {
+    if (!subject.req) return true;
+    return subject.req.every(r => r === "CBC" ? checkCBC() : approved.includes(r));
+}
+
+function checkCBC() {
+    const cbcSubjects = data[0].subjects.map(s => s.name);
+    return cbcSubjects.every(s => approved.includes(s));
+}
+
+function render() {
+    const container = document.getElementById("curriculum");
+    container.innerHTML = "";
+    data.forEach(col => {
+        const colDiv = document.createElement("div");
+        colDiv.className = "column";
+        const title = document.createElement("h2");
+        title.textContent = col.year;
+        colDiv.appendChild(title);
+        col.subjects.forEach(sub => {
+            const div = document.createElement("div");
+            div.className = "subject";
+            div.textContent = sub.name;
+            if (approved.includes(sub.name)) {
+                div.classList.add("approved");
+            } else if (!hasRequirement(sub)) {
+                div.classList.add("locked");
+                const tooltip = document.createElement("span");
+                tooltip.className = "tooltip";
+                const missing = sub.req.filter(r => r === "CBC" ? !checkCBC() : !approved.includes(r));
+                tooltip.textContent = "Falta: " + missing.join(", ");
+                div.appendChild(tooltip);
+            }
+            div.addEventListener("click", () => {
+                if (div.classList.contains("locked")) return;
+                if (approved.includes(sub.name)) {
+                    approved = approved.filter(s => s !== sub.name);
+                } else {
+                    approved.push(sub.name);
+                }
+                saveProgress();
+                render();
+            });
+            colDiv.appendChild(div);
+        });
+        container.appendChild(colDiv);
+    });
+}
+
+render();
+</script>
+</body>
+</html>
