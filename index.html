@@ -16,9 +16,9 @@
     h1 {
         text-align: center;
         margin-bottom: 20px;
-        color: #000;
         background-color: #CD5C5C;
         font-family: 'Mate SC', serif;
+        color: #000;
         padding: 10px;
         border-radius: 8px;
     }
@@ -37,9 +37,9 @@
     .year h2 {
         text-align: center;
         font-size: 18px;
-        color: #000;
         background-color: #CD5C5C;
         font-family: 'Mate SC', serif;
+        color: #000;
         border-radius: 6px;
         padding: 5px;
         margin-bottom: 10px;
@@ -101,7 +101,7 @@ const subjects = [
     {name: "Psicología", req: []},
     {name: "Semiología", req: []},
 
-    // Primer Año
+    // 1er Año
     {name: "Psicología General", req: ["CBC"]},
     {name: "Estadística", req: ["CBC"]},
     {name: "Psicología Social", req: ["CBC"]},
@@ -111,7 +111,7 @@ const subjects = [
     {name: "Requisito de Idioma I", req: ["Psicología General"]},
     {name: "Requisito de Idioma II", req: ["Psicología General"]},
 
-    // Segundo Año
+    // 2do Año
     {name: "Historia de la Psicología", req: ["Psicología General"]},
     {name: "Metodología de la Investigación", req: ["Psicología General","Estadística"]},
     {name: "Salud Pública y Salúd Mental", req: ["Psicología Social","Metodología de la Investigación"]},
@@ -119,14 +119,14 @@ const subjects = [
     {name: "Psicología Evolutiva: Niñez", req: ["Psicoanálisis: Freud","Psicología y Epistemología Genética"]},
     {name: "Psicología Evolutiva: Adolescencia", req: ["Psicología Evolutiva: Niñez"]},
 
-    // Tercer Año
+    // 3er Año
     {name: "Psicopatología", req: ["Neurofisiología","Psicología Evolutiva: Adolescencia"]},
     {name: "Teo. y Téc. de Explor. y Diag. I", req: ["Psicopatología","Metodología de la Investigación"]},
     {name: "Teo. y Téc. de Explor. y Diag. II", req: ["Teo. y Téc. de Explor. y Diag. I"]},
     {name: "Materia Electiva A", req: []},
     {name: "Materia Electiva B", req: []},
 
-    // Cuarto y Quinto Año
+    // 4° y 5° Año
     {name: "Psicología Ética y DDHH", req: ["Psicología Social","Historia de la Psicología"]},
     {name: "Psicología Institucional", req: ["Salud Pública y Salúd Mental","Teorías y Técnicas de Grupos"]},
     {name: "Psicología Educacional", req: ["Salud Pública y Salúd Mental","Teorías y Técnicas de Grupos","Psicología Evolutiva: Adolescencia"]},
@@ -152,8 +152,7 @@ const years = [
 let approved = JSON.parse(localStorage.getItem("approvedSubjects") || "[]");
 
 function checkCBCComplete(){
-    const cbcSubjects = subjects.slice(0,6);
-    return cbcSubjects.every(s => approved.includes(s.name));
+    return subjects.slice(0,6).every(s => approved.includes(s.name));
 }
 
 function isLocked(subj){
@@ -179,7 +178,7 @@ function render(){
             if(div.classList.contains("locked")){
                 const tip = document.createElement("div");
                 tip.className = "tooltip";
-                tip.textContent = "Falta: " + subj.req.filter(r => !approved.includes(r) && r !== "CBC").join(", ") || "Completar CBC";
+                tip.textContent = "Falta: " + (subj.req.filter(r => !approved.includes(r) && r !== "CBC").join(", ") || "Completar CBC");
                 div.appendChild(tip);
             }
             div.addEventListener("click", ()=>{
@@ -204,8 +203,3 @@ render();
 </body>
 </html>
 
-
-render();
-</script>
-</body>
-</html>
